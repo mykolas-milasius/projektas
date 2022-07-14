@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Pagrindinis puslapis</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
+    
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.js"></script> <!-- TINKA -->
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script> <!--  TINKA -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	<script>
+	$(document).ready(function()
+    {
+		var dialog_prideti, form_prideti;
+		//Pridejimas
+        dialog_prideti = $( "#div_sukurti" ).dialog(
+        {
+            autoOpen: false,
+            height: 500,
+            width: 500,
+            modal: true,
+            buttons:
+            {
+                "Patvirtinti": sukurtiPrasyma,
+                Cancel: function()
+                {
+                	dialog_prideti.dialog( "close" ); 
+                }
+            }
+        });
+
+        $( "#button_sukurti" ).button().on( "click", function()
+        {
+        	dialog_prideti.dialog( "open" );
+        });
+		         
+        form_prideti = dialog_prideti.find( "form" );
+	            
+	    function sukurtiPrasyma()
+	    {
+	        $("#sukurimo_forma").submit();
+	    }
+	    //Šalinti
+	    var dialog_salinti;
+	    
+	    dialog_salinti = $( "#salinti_prasyma" ).dialog(
+           {
+               autoOpen: false,
+               height: 500,
+               width: 500,
+               modal: true,
+               buttons:
+               {
+                   "Pašalinti": function()
+                   {
+                   	dialog_salinti.dialog( "close" );
+   					$( '#salinimo_forma' ).submit();
+                   },
+                   Cancel: function()
+                   {
+                   	dialog_salinti.dialog( "close" ); 
+                   }
+               }
+           });
+   		    
+   		    $('.delete').button().on('click', function() // +
+    		{
+   		    	id_prasymo = $( this ).data ( 'el_id' );
+	    		$('#id_prasymo').val(id_prasymo); //console.log(id_prasymo);
+				dialog_salinti.dialog("open");
+    		})
+     });
+	</script>
+</head>
+<body class='container'>
+	<div class="row align-items-center" id="page-header">
+		<div class="col-4">
+			<b id="imones_sukis">"Ugdymo įstaiga"</b>
+		</div>
+		<div class="col-4" id="menu">
+			<nav>
+				  <button type = "button" class="btn btn-outline-primary" onClick="location.href='pagrindinis';">Pagrindinis</button>
+				  <button type = "button" class="btn btn-outline-primary" onClick="location.href='prasymai';">Pateikti prašymą</button>
+				  <button type = "button" class="btn btn-outline-primary" onClick="location.href='admin';">Admin</button>
+			</nav>
+		</div>
+		<div class="col-4 justify-content-end">
+			<div sec:authorize="!isAuthenticated()"> 
+				<button type = "button" class="btn btn-outline-primary" onClick="location.href='login';">Prisijungti</button>
+				<button type = "button" class="btn btn-outline-primary" onClick="location.href='register';">Registruotis</button>
+			</div>
+			<div sec:authorize="isAuthenticated()">
+				<form th:action="@{/logout}" method="post">
+					<input id="atsijungti" type="submit" value="Atsijungti">
+					<span th:if="${#request != null}" th:text="${#request.userPrincipal.principal.getUsername()}"></span>
+				</form> 
+			</div>
+		</div>
+		<button id="button_sukurti" style="height:50px; width:100px">Sukurti</button>
+		<div id="salinti_prasyma">
+	         <form method="post" action="/salinti_prasyma" id="salinimo_forma">
+	         	 <h3>Ar tikrai norite ištrinti pasirinktą įstaigą?</h3>
+	             <input type="hidden" name="id_prasymo" id="id_prasymo" value="0">
+	             <input type="hidden" name="salinti" value="salinti">
+	         </form>
+    	</div>
+		<div id="div_sukurti">
+		    <form method="post" action="" id="sukurimo_forma">
+				<p><label for="asmenskodas">Asmens Kodas</label></p>
+				<p><input type="text" id="asmenskodas" name="asmenskodas" value=""></p>
+				<p><label for="vardas">Vardas</label></p>
+				<p><input type="text" id="vardas" name="vardas" value=""></p>
+				<p><label for="pavarde">Pavardė</label></p>
+				<p><input type="text" id="pavarde" name="pavarde" value=""></p>
+				<p><label for="klase">Klasė</label></p>
+				<p><input type="text" id="klase" name="klase" value=""></p>
+				<p><label for="pavadinimas">Pavadinimas</label></p>
+				<p><input type="text" id="pavadinimas" name="pavadinimas" value=""></p>
+				<input type="hidden" id="id" name="id" value="0">
+		        <input type="hidden" name="prideti_name" value="prideti">
+			 </form>
+		</div>
+		<table>
+			<tr>
+				<td>Asmens Kodas</td>
+				<td>Vardas</td>
+				<td>Pavardė</td>
+				<td>Gimimo data</td>
+				<td>Klasė</td>
+				<td>Ugdymo įstaigos pavadinimas</td>
+				<td>Ištrinti prašymą</td>
+			</tr>
+			<tr th:each="prasymas : ${prasymai}">
+				<td th:text="${prasymas.getAsmenskodas()}"></td>			
+				<td th:text="${prasymas.getVardas()}"></td>
+				<td th:text="${prasymas.getPavarde()}"></td>
+				<td th:text="${prasymas.getGimimoData()}"></td>
+				<td th:text="${prasymas.getKlase()}"></td>
+				<td th:text="${prasymas.getPavadinimas()}"></td>
+				<td><input type="button" class="delete" th:attr="data-el_id=${prasymas.getId()}" value="pašalinti"></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

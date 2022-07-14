@@ -1,47 +1,53 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Lentelė</title>
+	<title>Pagrindinis puslapis</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css">
+    <style>
+		tr, th, td
+		{
+			border: 2px solid black;
+		}
+    </style>
     
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.js"></script> <!-- TINKA -->
     <script type="text/javascript" src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script> <!--  TINKA -->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-	<script>
+		<script>
 		$(document).ready(function()
-           {
-   			var dialog_prideti, form_prideti;
-   			//Pridejimas
-               dialog_prideti = $( "#div_sukurti" ).dialog(
-               {
-                   autoOpen: false,
-                   height: 300,
-                   width: 300,
-                   modal: true,
-                   buttons:
-                   {
-                       "Patvirtinti": sukurtiPreke,
-                       Cancel: function()
-                       {
-                       	dialog_prideti.dialog( "close" ); 
-                       }
-                   }
-               });
-   			
-               $( "#button_sukurti" ).button().on( "click", function()
-               {
-               	dialog_prideti.dialog( "open" );
-               });
+        {
+			var dialog_prideti, form_prideti;
+			//Pridejimas
+            dialog_prideti = $( "#div_sukurti" ).dialog(
+            {
+                autoOpen: false,
+                height: 500,
+                width: 500,
+                modal: true,
+                buttons:
+                {
+                    "Patvirtinti": sukurtiIstaiga,
+                    Cancel: function()
+                    {
+                    	dialog_prideti.dialog( "close" ); 
+                    }
+                }
+            });
+			
+            $( "#button_sukurti" ).button().on( "click", function()
+            {
+            	dialog_prideti.dialog( "open" );
+            });
+            
+            form_prideti = dialog_prideti.find( "form" );
                
-               form_prideti = dialog_prideti.find( "form" );
-               
-   		    function sukurtiPreke()
+   		    function sukurtiIstaiga()
    		    {
    		        $("#sukurimo_forma").submit();
    		    }
@@ -50,15 +56,15 @@
    		    {
    		    	$( this ).button().click ( function()
    		    	{
-   		    		id_prekes = $( this ).data ( 'el_id' );
+   		    		id_istaigos = $( this ).data ( 'el_id' );
    		    		
    					$.ajax(
    					{
   						 method: 'POST'
-  				 		 , url: '/preke'
+  				 		 , url: '/ugdymo_istaiga_redaguoti'
   				 		 , data:
   				 		 	{
-  				 		 		id: id_prekes
+  				 		 		id: id_istaigos
    				 		}		
    					}).done( function( data )
    						{
@@ -67,20 +73,20 @@
     							$( '#id').val ( data.id );
     							$( '#pav' ).val ( data.pavadinimas );
     							$( '#kaina' ).val ( data.kaina );
-    							dialog_prideti.dialog( "open" );	// dialog_prideti					
+    							dialog_prideti.dialog( "open" );					
    							}
-   							console.log ( JSON.stringify ( data ) );
+   							//console.log ( JSON.stringify ( data ) );
    				  	});			    		
    		    	});			    
    		    });
    		    //Pašalinimas
    		    var dialog_salinti;
    		    
-   		    dialog_salinti = $( "#salinti_uzsakyma" ).dialog(
+   		    dialog_salinti = $( "#salinti_istaiga" ).dialog(
                {
                    autoOpen: false,
-                   height: 300,
-                   width: 300,
+                   height: 500,
+                   width: 500,
                    modal: true,
                    buttons:
                    {
@@ -98,8 +104,8 @@
    		    
    		    $('.delete').button().on('click', function() // +
     		{
-   		    	id_prekes = $( this ).data ( 'el_id' );
-	    		$('#id_prekes').val(id_prekes); console.log(id_prekes);
+   		    	id_istaigos = $( this ).data ( 'el_id' );
+	    		$('#id_istaigos').val(id_istaigos); //console.log(id_istaigos);
 				dialog_salinti.dialog("open");
     		})
 	  });
@@ -113,9 +119,10 @@
 		<div class="col-4" id="menu">
 			<nav>
 				  <button type = "button" class="btn btn-outline-primary" onClick="location.href='pagrindinis';">Pagrindinis</button>
-				  <button type = "button" class="btn btn-outline-primary" onClick="location.href='darbai';">--------</button>
-				  <button type = "button" class="btn btn-outline-primary" onClick="location.href='employersRegister';">--------</button>
-				  <button type = "button" class="btn btn-outline-primary" onClick="location.href='aboutUs';">--------</button>
+				  <button type = "button" class="btn btn-outline-primary" onClick="location.href='prasymai';">Pateikti prašymą</button>
+				  <button type = "button" class="btn btn-outline-primary" onClick="location.href='admin';">Admin</button>
+				  <button type = "button" class="btn btn-outline-primary" onClick="location.href='admin_patvirtinti';">Patvirtinti prašymus</button>
+				  <button type = "button" class="btn btn-outline-primary" onClick="location.href='admin_prideti';">Pridėti įstaigą</button>
 			</nav>
 		</div>
 		<div class="col-4 justify-content-end">
@@ -131,20 +138,23 @@
 			</div>
 		</div>
 	</div>
+	<div class="row align-items-center">
 	<div id="div_sukurti">
 	    <form method="post" action="" id="sukurimo_forma">
-			<label for="pav">Prekė</label>
-			<input type="text" id="pav" name="pav" value="">
-			<label for="kaina">Kaina</label>		
-			<input type="text" id="kaina" name="kaina" value="">
+			<p><label for="pav">Pavadinimas</label></p>
+			<p><input type="text" id="pav" name="pav" value=""></p>
+			<p><label for="kodas">Kodas</label>		</p>
+			<p><input type="text" id="kodas" name="kodas" value=""></p>
+			<p><label for="adresas">Adresas</label>		</p>
+			<p><input type="text" id="adresas" name="adresas" value=""></p>
 			<input type="hidden" id="id" name="id" value="0">
 	        <input type="hidden" name="prideti_name" value="prideti">
 		 </form>
 	</div>
-    <div id="salinti_uzsakyma">
-         <form method="post" action="/salinti-preke" id="salinimo_forma">
-         	 <h3>Ar tikrai norite ištrinti pasirinktą prekę?</h3>
-             <input type="hidden" name="id_prekes" id="id_prekes" value="0">
+    <div id="salinti_istaiga">
+         <form method="post" action="/salinti_istaiga" id="salinimo_forma">
+         	 <h3>Ar tikrai norite ištrinti pasirinktą įstaigą?</h3>
+             <input type="hidden" name="id_istaigos" id="id_istaigos" value="0">
              <input type="hidden" name="salinti" value="salinti">
          </form>
     </div>
@@ -152,18 +162,20 @@
 		<button id="button_sukurti" style="height:50px; width:100px">Sukurti</button>
 		<table>
 			<tr>
-				<td>Prekės pavadinimas</td>
-				<td>Prekės kaina</td>
-				<td>Redaguoti duomenis</td>
-				<td>Pašalinti prekę</td>
+				<td>Ugdymo įstaigos pavadinimas</td>
+				<td>Kodas</td>
+				<td>Adresas</td>
+				<td>Pašalinti įstaigą</td>
 			</tr>
-			<tr th:each="preke : ${prekes}">
-				<td th:text="${preke.getPavadinimas()}"></td>			
-				<td th:text="${preke.getKaina()}"></td>
-				<td><input type="button" class="edit" th:attr="data-el_id=${preke.getId()}" value="redaguoti"></td>			
-				<td><input type="button" class="delete" th:attr="data-el_id=${preke.getId()}" value="pašalinti"></td>
+			<tr th:each="istaiga : ${istaigos}">
+				<td th:text="${istaiga.getPavadinimas()}"></td>			
+				<td th:text="${istaiga.getKodas()}"></td>
+				<td th:text="${istaiga.getAdresas()}"></td>
+				<td><input type="button" class="edit" th:attr="data-el_id=${istaiga.getId()}" value="redaguoti"></td>			
+				<td><input type="button" class="delete" th:attr="data-el_id=${istaiga.getId()}" value="pašalinti"></td>
 			</tr>
 		</table>
+	</div>
 	</div>
 </body>
 </html>
